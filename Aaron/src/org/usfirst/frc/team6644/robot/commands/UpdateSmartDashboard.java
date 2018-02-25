@@ -1,6 +1,5 @@
 package org.usfirst.frc.team6644.robot.commands;
 
-import org.usfirst.frc.team6644.robot.Robot;
 import org.usfirst.frc.team6644.robot.subsystems.ForceSensor;
 import org.usfirst.frc.team6644.robot.subsystems.drive.DriveMotors;
 
@@ -13,7 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class UpdateSmartDashboard extends Command {
-	double[] encoderValues;
+	double[] encoderDistances;
+	double[] encoderRates;
 	double[] driveOutputs;
 	JoystickButton linearDrive;
 	JoystickButton compensate;
@@ -26,8 +26,6 @@ public class UpdateSmartDashboard extends Command {
 	protected void initialize() {
 		DriveMotors.getInstance();
 		// test=new ForceSensor(0);
-		linearDrive = new JoystickButton(Robot.joystick, 1);
-		compensate = new JoystickButton(Robot.joystick, 2);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -36,14 +34,15 @@ public class UpdateSmartDashboard extends Command {
 			DriveMotors.getInstance().testDrive(linearDrive.get(), compensate.get());
 		}
 
-		encoderValues = DriveMotors.getInstance().getEncoders().encoderDistance();
+		encoderDistances = DriveMotors.getInstance().getEncoders().encoderDistance();
+		encoderRates = DriveMotors.getInstance().getEncoders().encoderRate();
 		driveOutputs = DriveMotors.getInstance().getDriveOutputs();
-		SmartDashboard.putNumber("Encoder left value: ", encoderValues[0]);
-		SmartDashboard.putNumber("Encoder right value: ", encoderValues[1]);
-		SmartDashboard.putNumber("Drive left value: ", driveOutputs[0]);
-		SmartDashboard.putNumber("Drive right value: ", driveOutputs[1]);
-		SmartDashboard.putBoolean("linearDrive: ", linearDrive.get());
-		SmartDashboard.putBoolean("compensate: ", compensate.get());
+		SmartDashboard.putNumber("Encoder distance left value", encoderDistances[0]);
+		SmartDashboard.putNumber("Encoder distance right value", encoderDistances[1]);
+		SmartDashboard.putNumber("Encoder rate left value", encoderRates[0]);
+		SmartDashboard.putNumber("Encoder rate left value", encoderRates[1]);
+		SmartDashboard.putNumber("Drive left value", driveOutputs[0]);
+		SmartDashboard.putNumber("Drive right value", driveOutputs[1]);
 
 		// SmartDashboard.putNumber("ForceSensor Voltage: ", test.getVoltage());
 	}

@@ -101,6 +101,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		//query game data here
 		Scheduler.getInstance().add(new AutonomousTankDrive());
 		// Scheduler.getInstance().add(new UpdateSmartDashboard());
 		// DriveMotors.getInstance().encoderReset();

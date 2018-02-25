@@ -1,6 +1,7 @@
 package org.usfirst.frc.team6644.robot.libraryAdditions;
 
 import org.usfirst.frc.team6644.robot.subsystems.drive.DriveMotors;
+import org.usfirst.frc.team6644.robot.subsystems.drive.Safety;
 
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -37,23 +38,28 @@ public class DifferentialDrivePID extends DifferentialDrive implements PIDOutput
 	public void pidWrite(double output) {
 		double[] outputs = DriveMotors.getInstance().getDriveOutputs();
 		if (compare) {
-			boolean[] directions = DriveMotors.getInstance().getEncoders().encoderDirection();
-			if (directions[0] == directions[1]) {
-				double compensate = output * ((directions[0] ? 1 : 0) * 2 - 1); // TODO:ASSUMES true is forward. Check
-																				// this assumption.
-				if (compensate > 0) {
-					outputs[1] = limit(outputs[1] + output);
-					outputs[0] = limit(outputs[0]
-							- ((1 - Math.abs(outputs[1]) < compensate) ? (output + outputs[1] - 1) : 0));
-				} else {
-					outputs[0] = limit(outputs[0] + compensate);
-					outputs[1] = limit(outputs[1]
-							- ((1 - Math.abs(outputs[0]) < output) ? (output + outputs[0] - 1) : 0));
-				}
-				this.tankDrive(outputs[0], outputs[1], false);
-			}
+			driveStraight(outputs, output);
+			Safety.getInstance().modify(outputs);
+			this.tankDrive(outputs[0], outputs[1], false);
 		} else {
-			//do stuff for driving a set distance
+			// do stuff for driving a set distance
+			// derp, nothing here yet :/
+		}
+	}
+
+	private void driveStraight(double[] outputs, double output) {
+		boolean[] directions = DriveMotors.getInstance().getEncoders().encoderDirection();
+		if (directions[0] == directions[1]) {
+			double compensate = output * ((directions[0] ? 1 : 0) * 2 - 1); // TODO:ASSUMES true is forward. Check
+																			// this assumption.
+			if (compensate > 0) {
+				outputs[1] = limit(outputs[1] + output);
+				outputs[0] = limit(
+						outputs[0] - ((1 - Math.abs(outputs[1]) < compensate) ? (output + outputs[1] - 1) : 0));
+			} else {
+				outputs[0] = limit(outputs[0] + compensate);
+				outputs[1] = limit(outputs[1] - ((1 - Math.abs(outputs[0]) < output) ? (output + outputs[0] - 1) : 0));
+			}
 		}
 	}
 }

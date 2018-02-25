@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+
+import org.usfirst.frc.team6644.robot.OI;
 import org.usfirst.frc.team6644.robot.Robot;
 import org.usfirst.frc.team6644.robot.RobotPorts;
 import org.usfirst.frc.team6644.robot.libraryAdditions.DifferentialDrivePID;
@@ -22,14 +24,16 @@ public class DriveMotors extends Subsystem {
 
 	// Drivebase stuff
 	private static DriveMotors instance;
-	private static DifferentialDrive drive;
-	// private statc DifferentailDrivePID drive;
+	private static DifferentialDrivePID drive;
 
 	protected double left = 0;
 	protected double right = 0;
 
 	// Autonomous Stuff
 	private static PIDController StraighteningPID;
+	private static double P;
+	private static double I;
+	private static double D;
 
 	// Encoder stuff
 	private static DriveEncodersPID encoders;
@@ -50,14 +54,8 @@ public class DriveMotors extends Subsystem {
 
 	private DriveMotors() {
 		// create a DifferentialDrive
-		// drive = new DifferentialDrivePID(new
-		// Spark(RobotPorts.LEFT_DRIVE_PWM_SPLIT.get()), new
-		// Spark(RobotPorts.RIGHT_DRIVE_PWM_SPLIT.get()), true);
-		Spark leftMotor = new Spark(RobotPorts.LEFT_DRIVE_PWM_SPLIT.get());
-		leftMotor.setInverted(false);
-		Spark rightMotor = new Spark(RobotPorts.RIGHT_DRIVE_PWM_SPLIT.get());
-		rightMotor.setInverted(false);
-		drive = new DifferentialDrive(leftMotor, rightMotor);
+		drive = new DifferentialDrivePID(new Spark(RobotPorts.LEFT_DRIVE_PWM_SPLIT.get()),
+				new Spark(RobotPorts.RIGHT_DRIVE_PWM_SPLIT.get()), true);
 		safety.registerMotor(drive);
 		safety.setTimeout(0.3);
 
@@ -68,6 +66,16 @@ public class DriveMotors extends Subsystem {
 		encoders.setReverseDirection(true, false);
 		encoders.encoderSetSamplesToAverage(4);
 		encoders.encoderSetDistancePerPulse(0.0020454076); // this is in ft/pulse
+
+		// initialize straightening PID loop and constants
+		StraighteningPID = new PIDController(0, 0, 0, encoders, drive);
+		StraighteningPID.setOutputRange(-1, 1);
+		StraighteningPID.disable();
+		encoders.setPIDSourceType(PIDSourceType.kDisplacement);
+		drive.setCompare(true);
+		P = 0;
+		I = 0;
+		D = 0;
 	}
 
 	public DriveEncodersPID getEncoders() {
@@ -102,23 +110,16 @@ public class DriveMotors extends Subsystem {
 
 	public void startAutoMode() {
 		safety.disableAll();
-		// set setpoint
-		drive.free();
 		history.abort();
-		encoders.setPIDSourceType(PIDSourceType.kDisplacement);
-		/*
-		 * StraighteningPID = new PIDController(0, 0, 0, encoders, drive);
-		 * StraighteningPID.setOutputRange(-1, 1); StraighteningPID.enable();
-		 */
+		if (StraighteningPID != null) {
+			StraighteningPID.enable();
+		}
 	}
 
 	public void stopAutoMode() {
-		StraighteningPID.disable();
-		/*
-		 * pidLoop.free(); drive = new DifferentialDrive(new
-		 * Spark(RobotPorts.LEFT_DRIVE_PWM_SPLIT.get()), new
-		 * Spark(RobotPorts.RIGHT_DRIVE_PWM_SPLIT.get()));
-		 */
+		if (StraighteningPID != null) {
+			StraighteningPID.disable();
+		}
 	}
 
 	public void startTeleopMode() {
@@ -139,11 +140,16 @@ public class DriveMotors extends Subsystem {
 			left = Math.copySign(left * left, left);
 			right = Math.copySign(right * right, right);
 		}
-
-		double[] outputs = { left, right };
-		safety.modify(outputs);
-
-		tankDrive(outputs[0], outputs[1], false);
+		if (OI.compensate.get()) {
+			if (StraighteningPID != null && !StraighteningPID.isEnabled()) {
+				StraighteningPID.enable();
+			}
+		} else {
+			if (StraighteningPID != null && StraighteningPID.isEnabled()) {
+				StraighteningPID.disable();
+			}
+			tankDrive(left, right, false);
+		}
 		// -----------------------------------------------------------------
 		// TODO: DELETE THIS WHEN DONE
 
