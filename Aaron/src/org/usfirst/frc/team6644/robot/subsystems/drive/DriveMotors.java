@@ -2,18 +2,21 @@ package org.usfirst.frc.team6644.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 import org.usfirst.frc.team6644.robot.OI;
 import org.usfirst.frc.team6644.robot.Robot;
 import org.usfirst.frc.team6644.robot.RobotPorts;
+
+/*
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import org.usfirst.frc.team6644.robot.libraryAdditions.DifferentialDrivePID;
 import org.usfirst.frc.team6644.robot.libraryAdditions.DriveEncodersPID;
+*/
 
 public class DriveMotors extends Subsystem {
 	// History
@@ -24,26 +27,33 @@ public class DriveMotors extends Subsystem {
 
 	// Drivebase stuff
 	private static DriveMotors instance;
+	/*
 	private static DifferentialDrivePID drive;
-
+	*/
+	private static DifferentialDrive drive;
+	
 	protected double left = 0;
 	protected double right = 0;
 
 	// Autonomous Stuff
+	/*
 	private static PIDController StraighteningPID;
 	private static double P;
 	private static double I;
 	private static double D;
-
+	
 	// Encoder stuff
+	
 	private static DriveEncodersPID encoders;
-
+	*/
+	/*
 	// Testing Stuff (please clear when done using these)
 	// TODO: DELETE THIS WHEN DONE
 	private static int rateCounter = 0;
 	private static boolean calculateScale = false;
 	private static boolean pressed = false;
 	private static JoystickButton searchForScale = new JoystickButton(Robot.joystick, 11);
+	*/
 
 	public static DriveMotors getInstance() {
 		if (instance == null) {
@@ -54,20 +64,25 @@ public class DriveMotors extends Subsystem {
 
 	private DriveMotors() {
 		// create a DifferentialDrive
+		/*
 		drive = new DifferentialDrivePID(new Spark(RobotPorts.LEFT_DRIVE_PWM_SPLIT.get()),
 				new Spark(RobotPorts.RIGHT_DRIVE_PWM_SPLIT.get()), true);
 		safety.registerMotor(drive);
 		safety.setTimeout(0.3);
+		*/
 
 		// do encoder stuff
+		/*
 		encoders = new DriveEncodersPID(new Encoder(RobotPorts.LEFT_ENCODER_A.get(), RobotPorts.LEFT_ENCODER_B.get()),
 				new Encoder(RobotPorts.RIGHT_ENCODER_A.get(), RobotPorts.RIGHT_ENCODER_B.get()), true, true);
 		encoders.encoderReset();
 		encoders.setReverseDirection(true, false);
 		encoders.encoderSetSamplesToAverage(4);
 		encoders.encoderSetDistancePerPulse(0.0020454076); // this is in ft/pulse
+		*/
 
 		// initialize straightening PID loop and constants
+		/*
 		StraighteningPID = new PIDController(0, 0, 0, encoders, drive);
 		StraighteningPID.setOutputRange(-1, 1);
 		StraighteningPID.disable();
@@ -76,12 +91,20 @@ public class DriveMotors extends Subsystem {
 		P = 0;
 		I = 0;
 		D = 0;
+		*/
+		Spark left = new Spark(RobotPorts.LEFT_DRIVE_PWM_SPLIT.get());
+		Spark right = new Spark(RobotPorts.RIGHT_DRIVE_PWM_SPLIT.get());
+		left.setInverted(false);
+		right.setInverted(false);
+		drive = new DifferentialDrive(left, right);
+		safety.registerMotor(drive);
+		safety.setTimeout(0.3);
 	}
-
+	/*
 	public DriveEncodersPID getEncoders() {
 		return encoders;
 	}
-
+	*/
 	/*
 	 * methods for drive motors
 	 */
@@ -103,23 +126,29 @@ public class DriveMotors extends Subsystem {
 	public void stop() {
 		safety.disableAll();
 		drive.stopMotor();
+		/*
 		if (StraighteningPID != null && StraighteningPID.isEnabled()) {
 			StraighteningPID.disable();
 		}
+		*/
 	}
 
 	public void startAutoMode() {
 		safety.disableAll();
 		history.abort();
+		/*
 		if (StraighteningPID != null) {
 			StraighteningPID.enable();
 		}
+		*/
 	}
 
 	public void stopAutoMode() {
+		/*
 		if (StraighteningPID != null) {
 			StraighteningPID.disable();
 		}
+		*/
 	}
 
 	public void startTeleopMode() {
@@ -140,19 +169,24 @@ public class DriveMotors extends Subsystem {
 			left = Math.copySign(left * left, left);
 			right = Math.copySign(right * right, right);
 		}
+		
 		if (OI.compensate.get()) {
+			/*
 			if (StraighteningPID != null && !StraighteningPID.isEnabled()) {
 				StraighteningPID.enable();
 			}
+			*/
 		} else {
+			/*
 			if (StraighteningPID != null && StraighteningPID.isEnabled()) {
 				StraighteningPID.disable();
 			}
+			*/
 			tankDrive(left, right, false);
 		}
+		/*
 		// -----------------------------------------------------------------
 		// TODO: DELETE THIS WHEN DONE
-
 		if (!pressed) {
 			calculateScale = searchForScale.get();
 		}
@@ -161,6 +195,7 @@ public class DriveMotors extends Subsystem {
 			findScaleFactor();
 		}
 		// ------------------------------------------------------------------
+		*/
 	}
 
 	public History getHistory() {
@@ -200,6 +235,7 @@ public class DriveMotors extends Subsystem {
 	 * @param squared
 	 * @param compensate
 	 */
+	/*
 	public void testDrive(boolean squared, boolean compensate) {// TODO:DELETE THIS WHEN DONE
 		double forwardModifier = 1 - Math.abs(Robot.joystick.getY());
 		double sensitivity = (-Robot.joystick.getRawAxis(3) + 1) / 2;
@@ -250,4 +286,5 @@ public class DriveMotors extends Subsystem {
 			System.out.println("Input: " + rightIn + "; Scale Factor: " + scaleFactorRight + ";");
 		}
 	}
+	*/
 }

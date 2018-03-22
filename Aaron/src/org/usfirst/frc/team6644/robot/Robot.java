@@ -48,7 +48,6 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		LiveWindow.disableAllTelemetry(); // this fixes the CAN timeout error from the
 											// PowerDistributionMudule.getTotalCurrent()
-
 		joystick = new Joystick(RobotPorts.JOYSTICK.get());
 		pdm = new PDM();
 		pcm = new PCM();
@@ -108,9 +107,9 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousInit() {
 		// query game data
-		gameData = DStation.getGameData();
+		gameData=DStation.getGameData();
 		alliance = DStation.getAlliance();
-
+		
 		// add commands to scheduler
 		Scheduler.getInstance().add(new ReleaseGrabber());
 		Scheduler.getInstance().add(new AutonomousTankDrive());
