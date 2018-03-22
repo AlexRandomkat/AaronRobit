@@ -30,12 +30,14 @@ public class UpdateSmartDashboard extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
+		/*
 		if (DriverStation.getInstance().isDisabled()) {
 			DriveMotors.getInstance().testDrive(linearDrive.get(), compensate.get());
 		}
 
 		encoderDistances = DriveMotors.getInstance().getEncoders().encoderDistance();
 		encoderRates = DriveMotors.getInstance().getEncoders().encoderRate();
+		*/
 		driveOutputs = DriveMotors.getInstance().getDriveOutputs();
 		SmartDashboard.putNumber("Encoder distance left value", encoderDistances[0]);
 		SmartDashboard.putNumber("Encoder distance right value", encoderDistances[1]);

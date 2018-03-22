@@ -1,5 +1,6 @@
 package org.usfirst.frc.team6644.robot.commands;
 
+import org.usfirst.frc.team6644.robot.OI;
 import org.usfirst.frc.team6644.robot.subsystems.GrabberMotors;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -7,9 +8,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ReleaseGrabber extends Command {
+public class GrabberEStop extends Command {
 
-	public ReleaseGrabber() {
+	public GrabberEStop() {
 		// Use requires() here to declare subsystem dependencies
 		// requires(GrabberMotors.getInstance());
 		requires(GrabberMotors.getInstance());
@@ -17,17 +18,19 @@ public class ReleaseGrabber extends Command {
 
 	// Called just before this Command runs the first time
 	protected void initialize() {
-		setTimeout(3);
+		GrabberMotors.getInstance().fold(0);
+		GrabberMotors.getInstance().setSpeed(0);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		GrabberMotors.getInstance().fold(0.3);
+		GrabberMotors.getInstance().fold(0);
+		GrabberMotors.getInstance().setSpeed(0);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return isTimedOut();
+		return OI.grabberEStop.get();
 	}
 
 	// Called once after isFinished returns true

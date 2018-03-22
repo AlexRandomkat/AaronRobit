@@ -56,7 +56,7 @@ public class AutonomousTurn extends PIDCommand {
 
 	@Override
 	protected double returnPIDInput() {
-		return Gyro.getDegreesTotal();
+		return Gyro.getInstance().getDegreesTotal();
 	}
 
 	@Override

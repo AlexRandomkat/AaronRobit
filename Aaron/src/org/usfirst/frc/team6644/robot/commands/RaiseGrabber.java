@@ -7,9 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 /**
  *
  */
-public class ReleaseGrabber extends Command {
+public class RaiseGrabber extends Command {
 
-	public ReleaseGrabber() {
+	public RaiseGrabber() {
 		// Use requires() here to declare subsystem dependencies
 		// requires(GrabberMotors.getInstance());
 		requires(GrabberMotors.getInstance());
@@ -22,7 +22,7 @@ public class ReleaseGrabber extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
-		GrabberMotors.getInstance().fold(0.3);
+		GrabberMotors.getInstance().fold(-0.3);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

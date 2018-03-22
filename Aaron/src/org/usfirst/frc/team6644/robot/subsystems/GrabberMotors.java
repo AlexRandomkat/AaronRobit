@@ -36,7 +36,11 @@ public class GrabberMotors extends Subsystem {
 	public void setSpeed(double speed) {
 		grabber.set(speed);
 	}
-	public void release(double speed) {
+	public void stop() {
+		grabber.set(0);
+	}
+	
+	public void fold(double speed) {
 		reel.set(speed);
 	}
 	public void initDefaultCommand() {

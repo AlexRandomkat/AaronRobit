@@ -1,3 +1,4 @@
+/*
 package org.usfirst.frc.team6644.robot.libraryAdditions;
 
 import org.usfirst.frc.team6644.robot.subsystems.drive.DriveMotors;
@@ -12,9 +13,10 @@ import edu.wpi.first.wpilibj.SpeedController;
  * written primarily for the purpose of maintaining a straight course.
  *
  */
+/*
 public class DifferentialDrivePID extends DifferentialDrive implements PIDOutput {
 	private boolean compare;
-
+	
 	public DifferentialDrivePID(SpeedController leftMotor, SpeedController rightMotor) {
 		super(leftMotor, rightMotor);
 		compare = false;
@@ -28,13 +30,14 @@ public class DifferentialDrivePID extends DifferentialDrive implements PIDOutput
 	public void setCompare(boolean state) {
 		compare = state;
 	}
-
+*/
 	/**
 	 * If (compare==true){ Attempts to drive straight by preferentially increasing
 	 * the speed of the lagging side (the side with lowest speed, irrespective of
 	 * direction), then decreasing the speed of the faster side.} else {
 	 * 
 	 */
+/*
 	public void pidWrite(double output) {
 		double[] outputs = DriveMotors.getInstance().getDriveOutputs();
 		if (compare) {
@@ -46,7 +49,7 @@ public class DifferentialDrivePID extends DifferentialDrive implements PIDOutput
 			// derp, nothing here yet :/
 		}
 	}
-
+	
 	private void driveStraight(double[] outputs, double output) {
 		boolean[] directions = DriveMotors.getInstance().getEncoders().encoderDirection();
 		if (directions[0] == directions[1]) {
@@ -63,3 +66,4 @@ public class DifferentialDrivePID extends DifferentialDrive implements PIDOutput
 		}
 	}
 }
+*/

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Gyro extends Subsystem {
 
-	// could I just get rid of instance and just make gyro static?
+	// could I just get rid of instance and just make gyro static? NO!!!!!!
 	private static Gyro instance;
 	private ADXRS450_Gyro gyro;
 
@@ -24,20 +24,20 @@ public class Gyro extends Subsystem {
 		return instance;
 	}
 
-	public static double getDegrees() {
-		return getInstance().gyro.getAngle() % 360;
+	public double getDegrees() {
+		return gyro.getAngle() % 360;
 	}
 
-	public static double getDegreesTotal() {
-		return getInstance().gyro.getAngle();
+	public double getDegreesTotal() {
+		return gyro.getAngle();
 	}
 
-	public static double getRate() {
-		return getInstance().gyro.getRate();
+	public double getRate() {
+		return gyro.getRate();
 	}
 
-	public static void resetGyro() {
-		getInstance().gyro.reset();
+	public void reset() {
+		gyro.reset();
 	}
 
 	public ADXRS450_Gyro getGyro() {

@@ -125,6 +125,7 @@ public class DriveMotors extends Subsystem {
 
 	public void stop() {
 		safety.disableAll();
+		drive.arcadeDrive(0, 0);
 		drive.stopMotor();
 		/*
 		if (StraighteningPID != null && StraighteningPID.isEnabled()) {
