@@ -1,6 +1,7 @@
 
 package org.usfirst.frc.team6644.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -25,11 +26,14 @@ import org.usfirst.frc.team6644.robot.commands.*;
 public class Robot extends IterativeRobot {
 
 	public static OI oi;
+	public static String gameData;
+	public static DriverStation.Alliance alliance;
 
 	// Robot things
 	public static Joystick joystick;
 
 	// essential subsystems
+	public static Encoders encoders;
 	public static PDM pdm;
 	public static PCM pcm;
 
@@ -48,6 +52,8 @@ public class Robot extends IterativeRobot {
 		joystick = new Joystick(RobotPorts.JOYSTICK.get());
 		pdm = new PDM();
 		pcm = new PCM();
+		encoders = new Encoders(RobotPorts.LEFT_ENCODER_A.get(), RobotPorts.LEFT_ENCODER_B.get(),
+				RobotPorts.RIGHT_ENCODER_A.get(), RobotPorts.RIGHT_ENCODER_B.get());
 
 		oi = new OI();
 
@@ -101,7 +107,12 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		//query game data here
+		// query game data
+		gameData = DStation.getGameData();
+		alliance = DStation.getAlliance();
+
+		// add commands to scheduler
+		Scheduler.getInstance().add(new ReleaseGrabber());
 		Scheduler.getInstance().add(new AutonomousTankDrive());
 		// Scheduler.getInstance().add(new UpdateSmartDashboard());
 		// DriveMotors.getInstance().encoderReset();
